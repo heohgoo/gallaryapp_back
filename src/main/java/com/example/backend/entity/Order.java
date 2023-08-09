@@ -31,8 +31,4 @@ public class Order {
 
     @Column(length = 500, nullable = false)
     private String items;
-
-
-
-
 }

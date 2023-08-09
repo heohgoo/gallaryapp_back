@@ -38,7 +38,6 @@ public class OrderController {
     }
 
 
-
     @PostMapping("/api/orders")
     public ResponseEntity pushOrder(
             @RequestBody OrderDto dto,
@@ -51,6 +50,7 @@ public class OrderController {
         Order newOrder = new Order();
         newOrder.setMemberId(jwtService.getId(token));
         newOrder.setName(dto.getName());
+        newOrder.setPayment(dto.getPayment());
         newOrder.setAddress(dto.getAddress());
         newOrder.setCardNumber(dto.getCardNumber());
         newOrder.setItems(dto.getItems());
