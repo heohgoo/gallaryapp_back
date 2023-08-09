@@ -25,6 +25,19 @@ public class OrderController {
     @Autowired
     JwtService jwtService;
 
+    @GetMapping("/api/orders")
+    public ResponseEntity getOrder(
+            @CookieValue(value= "token", required = false) String token
+    ) {
+        if(!jwtService.isValid(token)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<Order> orders = orderRepository.findAll();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+
 
     @PostMapping("/api/orders")
     public ResponseEntity pushOrder(
