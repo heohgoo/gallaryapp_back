@@ -47,6 +47,16 @@ public class AccountController {
        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
+    @PostMapping("/api/account/logout")
+    public ResponseEntity logout(HttpServletResponse res) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        res.addCookie(cookie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/api/account/check")
     //ResponseEntity -> HttpEntity를 상속받으며, 결과 데이터와 http 상태를 제어한다.
     public ResponseEntity check(@CookieValue(value = "token", required = false) String token) {
