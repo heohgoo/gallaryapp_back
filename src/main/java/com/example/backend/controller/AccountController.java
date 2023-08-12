@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.MemberDto;
 import com.example.backend.entity.Member;
 import com.example.backend.repository.MemberRepository;
 import com.example.backend.service.JwtService;
@@ -23,6 +24,25 @@ public class AccountController {
 
     @Autowired
     JwtService jwtService;
+
+    @PostMapping("/api/account/signup")
+    public ResponseEntity signup(@RequestBody MemberDto dto,
+                                 HttpServletResponse res) {
+        Member newMember = new Member();
+
+        newMember.setEmail(dto.getEmail());
+        newMember.setPassword(dto.getPassword());
+
+        Member find = memberRepository.findByEmail(newMember.getEmail());
+
+        if (find == null) {
+            memberRepository.save(newMember);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+    }
 
     @PostMapping("/api/account/login")
     public ResponseEntity login(@RequestBody Map<String, String> params,
@@ -69,4 +89,5 @@ public class AccountController {
 
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
+
 }
