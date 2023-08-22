@@ -1,10 +1,12 @@
 package com.example.backend.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "items")
 public class Item {
