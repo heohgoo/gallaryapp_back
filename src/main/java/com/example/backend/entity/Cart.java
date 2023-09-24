@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +20,4 @@ public class Cart {
 
     @Column
     private int itemId;
-
-
-
-
 }
