@@ -28,14 +28,11 @@ public class AccountController {
     @PostMapping("/api/account/signup")
     public ResponseEntity signup(@RequestBody MemberDto dto,
                                  HttpServletResponse res) {
-        Member newMember = new Member();
+        Member newMember = Member
+                .builder().email(dto.getEmail()).password(dto.getPassword()).build();
 
-        newMember.setEmail(dto.getEmail());
-        newMember.setPassword(dto.getPassword());
 
-        Member find = memberRepository.findByEmail(newMember.getEmail());
-
-        if (find == null) {
+        if (memberRepository.findByEmail(newMember.getEmail()) == null) {
             memberRepository.save(newMember);
             return new ResponseEntity<>(HttpStatus.OK);
         }
