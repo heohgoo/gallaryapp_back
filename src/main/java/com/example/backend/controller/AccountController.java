@@ -26,8 +26,7 @@ public class AccountController {
     JwtService jwtService;
 
     @PostMapping("/api/account/signup")
-    public ResponseEntity signup(@RequestBody MemberDto dto,
-                                 HttpServletResponse res) {
+    public ResponseEntity signup(@RequestBody MemberDto dto) {
         Member newMember = Member
                 .builder().email(dto.getEmail()).password(dto.getPassword()).build();
 
