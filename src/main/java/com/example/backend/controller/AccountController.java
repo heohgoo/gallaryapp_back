@@ -25,6 +25,9 @@ public class AccountController {
     @Autowired
     JwtService jwtService;
 
+    @Autowired
+    HttpServletResponse res;
+
     @PostMapping("/api/account/signup")
     public ResponseEntity signup(@RequestBody MemberDto dto) {
         Member newMember = Member
@@ -37,32 +40,31 @@ public class AccountController {
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
 
     @PostMapping("/api/account/login")
-    public ResponseEntity login(@RequestBody MemberDto dto,
-                                HttpServletResponse res) {
-        Member member =
-                memberRepository.findByEmailAndPassword(dto.getEmail(), dto.getPassword());
+    public ResponseEntity login(@RequestBody MemberDto dto) {
+    Member member = Member
+            .builder().email(dto.getEmail()).password(dto.getPassword()).build();
 
-       if (member != null) {
-           JwtService jwtService = new JwtServiceImpl();
-           int id = member.getId();
-           String token = jwtService.getToken("id", id);
-           //key, value
+    System.out.println(memberRepository.findByEmail(member.getEmail()));
+    if (memberRepository.findByEmailAndPassword(member.getEmail(), member.getPassword()) != null) {
+        JwtService jwtService = new JwtServiceImpl();
+        int id = member.getId();
+        String token = jwtService.getToken("id", id);
+        //key, value
 
-           Cookie cookie = new Cookie("token", token);
-           cookie.setHttpOnly(true);
-           cookie.setPath("/");
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
 
-           res.addCookie(cookie);
-           return new ResponseEntity<>(id, HttpStatus.OK);
-       }
-
-       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        res.addCookie(cookie);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     @PostMapping("/api/account/logout")
     public ResponseEntity logout(HttpServletResponse res) {
         Cookie cookie = new Cookie("token", null);
