@@ -45,25 +45,24 @@ public class AccountController {
 
     @PostMapping("/api/account/login")
     public ResponseEntity login(@RequestBody MemberDto dto) {
-    Member member = Member
-            .builder().email(dto.getEmail()).password(dto.getPassword()).build();
+        Member member = Member
+                .builder().email(dto.getEmail()).password(dto.getPassword()).build();
 
-    System.out.println(memberRepository.findByEmail(member.getEmail()));
-    if (memberRepository.findByEmailAndPassword(member.getEmail(), member.getPassword()) != null) {
-        JwtService jwtService = new JwtServiceImpl();
-        int id = member.getId();
-        String token = jwtService.getToken("id", id);
-        //key, value
+        if (memberRepository.findByEmailAndPassword(member.getEmail(), member.getPassword()) != null) {
+            JwtService jwtService = new JwtServiceImpl();
+            int id = member.getId();
+            String token = jwtService.getToken("id", id);
+            //key, value
 
-        Cookie cookie = new Cookie("token", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+            Cookie cookie = new Cookie("token", token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
 
-        res.addCookie(cookie);
-        return new ResponseEntity<>(id, HttpStatus.OK);
-    }
+            res.addCookie(cookie);
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
 
-    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     @PostMapping("/api/account/logout")
     public ResponseEntity logout(HttpServletResponse res) {
