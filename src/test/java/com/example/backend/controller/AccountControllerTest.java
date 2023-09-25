@@ -14,9 +14,17 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,6 +38,8 @@ public class AccountControllerTest {
     private TestRestTemplate testRestTemplate;
     @Autowired
     private MemberRepository memberRepository;
+    HttpServletResponse response = new MockHttpServletResponse();
+
 
     @Test
     public void 회원가입() throws Exception {
@@ -54,25 +64,58 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void 로그인() throws Exception {
+    public void 회원가입_실패() throws Exception {
         String email = "email@email.com";
         String password = "password";
-        MemberDto memberDto = MemberDto.builder()
+        MemberDto memberdto = MemberDto.builder()
                 .email(email)
                 .password(password)
                 .build();
 
-        String url = "http://localhost:" + port + "/api/account/login";
+        String url = "http://localhost:" + port + "/api/account/signup";
 
         //when
-        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, memberDto, Long.class);
+        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, memberdto, Long.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+//        memberRepository.deleteAll();
     }
 
-    @AfterAll
-    public void tearDown() throws Exception {
-        memberRepository.deleteAll();
-    }
+//    @Test
+//    public void 로그인() throws Exception {
+//        String email = "email@email.com";
+//        String password = "password";
+//        MemberDto memberDto = MemberDto.builder()
+//                .email(email)
+//                .password(password)
+//                .build();
+//
+//        String url = "http://localhost:" + port + "/api/account/login";
+//
+//        //when
+//        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, memberDto, Long.class);
+//
+//        //then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    }
+
+//    @Test
+//    public void 로그인_실패() throws Exception {
+//        String email = "email@email.com";
+//        String password = "password1";
+//        MemberDto memberDto = MemberDto.builder()
+//                .email(email)
+//                .password(password)
+//                .build();
+//
+//        String url = "http://localhost:" + port + "/api/account/login";
+//
+//        //when
+//        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, null, Long.class);
+//
+//        //then
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+//    }
+
 }

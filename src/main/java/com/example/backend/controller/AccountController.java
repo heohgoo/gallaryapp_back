@@ -36,15 +36,15 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/api/account/login")
-    public ResponseEntity login(@RequestBody Map<String, String> params,
+    public ResponseEntity login(@RequestBody MemberDto dto,
                                 HttpServletResponse res) {
-       Member member =
-               memberRepository.findByEmailAndPassword(params.get("email"), params.get("password"));
+        Member member =
+                memberRepository.findByEmailAndPassword(dto.getEmail(), dto.getPassword());
 
        if (member != null) {
            JwtService jwtService = new JwtServiceImpl();
