@@ -4,7 +4,9 @@ import com.example.backend.dto.MemberDto;
 import com.example.backend.entity.Member;
 import com.example.backend.repository.MemberRepository;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,11 +31,6 @@ public class AccountControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @After
-    public void tearDown() throws Exception {
-        memberRepository.deleteAll();
-    }
-
     @Test
     public void 회원가입() throws Exception {
         String email = "email@email.com";
@@ -54,5 +51,28 @@ public class AccountControllerTest {
         List<Member> all = memberRepository.findAll();
         assertThat(all.get(0).getEmail()).isEqualTo(email);
         assertThat(all.get(0).getPassword()).isEqualTo(password);
+    }
+
+    @Test
+    public void 로그인() throws Exception {
+        String email = "email@email.com";
+        String password = "password";
+        MemberDto memberDto = MemberDto.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        String url = "http://localhost:" + port + "/api/account/login";
+
+        //when
+        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, memberDto, Long.class);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @AfterAll
+    public void tearDown() throws Exception {
+        memberRepository.deleteAll();
     }
 }
