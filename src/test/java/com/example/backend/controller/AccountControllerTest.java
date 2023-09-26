@@ -3,6 +3,8 @@ package com.example.backend.controller;
 import com.example.backend.dto.MemberDto;
 import com.example.backend.entity.Member;
 import com.example.backend.repository.MemberRepository;
+import com.example.backend.service.JwtService;
+import com.example.backend.service.JwtServiceImpl;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.jupiter.api.*;
@@ -113,5 +115,18 @@ public class AccountControllerTest {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         memberRepository.deleteAll();
+    }
+
+
+    @Test
+    public void 로그아웃_성공() throws Exception {
+        String url = "http://localhost:" + port + "/api/account/logout";
+        MockHttpServletResponse res = (MockHttpServletResponse) this.response;
+
+        //when
+        ResponseEntity<Long> responseEntity = testRestTemplate.postForEntity(url, null, Long.class);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
