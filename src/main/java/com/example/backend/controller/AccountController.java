@@ -64,6 +64,7 @@ public class AccountController {
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @PostMapping("/api/account/logout")
     public ResponseEntity logout(HttpServletResponse res) {
         Cookie cookie = new Cookie("token", null);
